@@ -1,0 +1,54 @@
+ERROR TypeError: Cannot read property ‘tapPromise’ of undefined报错的问题
+在使用gzip优化Vue的项目是插件版本的问题
+解决：cnpm install compression-webpack-plugin@6.1.1 --save-dev
+
+官网介绍vue.config.js
+https://cli.vuejs.org/zh/guide/webpack.html#%E7%AE%80%E5%8D%95%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%B9%E5%BC%8F
+
+
+链式操作 (高级)
+Vue CLI 内部的 webpack 配置是通过 webpack-chain 维护的。这个库提供了一个 webpack 原始配置的上层抽象，
+使其可以定义具名的 loader 规则和具名插件，并有机会在后期进入这些规则并对它们的选项进行修改。
+
+chainWebpack放了loader,更改和添加loader
+configureWebpack放了插件
+
+configureWebpack 与 chainWebpack 本质上没有什么区别，只是前者配置 简单方便，后者可以 更为细粒度地控制配置
+
+config
+  .plugin(name) //name 是 webpack-chain 里的key，就是要加入的插件在 webpack-chain 配置里的 key ，就是我们自定义插件的名字
+  .use(WebpackPlugin, args) //WebpackPlugin 使用的 webpack 插件名，在这里，可以直接使用插件，无需进行实例化，就是不需要 new WebpackPlugin()
+                            //args 插件的参数信息。特别注意，args是一个数组，例如 [{},{}] 这种方式，可以配置多个插件实例
+
+
+控制台输入：npx vue-cli-service inspect --mode development(代表vue inspect > output.js，拿到解析好的 webpack 配置。)
+控制台可以按住CTRL+F搜索
+
+–mode 指定环境模式 (默认值：development)
+//运行命令，在终端输出：
+开发环境：npx vue-cli-service inspect --mode development
+生产环境：npx vue-cli-service inspect --mode production
+运行命令，将输出导入到 js 文件：
+开发环境：npx vue-cli-service inspect --mode development >> webpack.config.development.js
+生产环境：npx vue-cli-service inspect --mode production >> webpack.config.production.js
+在产生的 js 文件开头，添加：module.exports =，然后格式化即可查看。
+
+
+//config.plugin(name).use需要cnpm i name -D
+cnpm i jquery -D
+cnpm i image-webpack-loader -D
+cnpm i url-loader -D
+cnpm i compression-webpack-plugin -D
+
+cnpm i uglifyjs-webpack-plugin -D
+
+
+//使用 Jquery 使还需要再 main.js 引入 Jquery:
+import $ from 'jquery'
+
+//Vue CLI 3使用：HTML和静态资源:
+https://www.jianshu.com/p/c6c285735c2d
+
+
+//ie11浏览器空白：vue-cli4.x vue.config.js 配置 babel-polyfill
+https://blog.csdn.net/shihezhengshz/article/details/118112655?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522164077428016780274180123%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&request_id=164077428016780274180123&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_ecpm_v1~rank_v31_ecpm-1-118112655.pc_search_insert_es_download_v2&utm_term=+%2F%2F+%E8%A7%A3%E5%86%B3ie11%E5%85%BC%E5%AE%B9ES6+++++++++++++++config.entry%28main%29.add%28babel-polyfill%29%3B&spm=1018.2226.3001.4187
